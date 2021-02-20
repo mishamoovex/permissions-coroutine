@@ -1,4 +1,4 @@
-package com.mishamoovex.permissions
+package com.mishamoovex.permissions.camera
 
 import android.Manifest
 import androidx.activity.result.ActivityResultRegistry
@@ -6,6 +6,10 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.mishamoovex.permissions.awaitForPermissions
+import com.mishamoovex.permissions.isVersionAboveQ
+import com.mishamoovex.permissions.openAppSettingsActivity
+import com.mishamoovex.permissions.showPermissionRationaleDialog
 
 private val cameraPermissions = mutableListOf(
     Manifest.permission.CAMERA,
@@ -32,7 +36,9 @@ suspend fun FragmentActivity.awaitForCameraPermission(
     }
 }
 
-suspend fun FragmentActivity.awaitForCameraPermission(): Boolean = awaitForPermissions(cameraPermissions)
+suspend fun FragmentActivity.awaitForCameraPermission(
+    registry: ActivityResultRegistry = activityResultRegistry
+): Boolean = awaitForPermissions(cameraPermissions,registry)
 
 suspend fun Fragment.awaitForCameraPermissions(
     appId: String,
@@ -48,4 +54,6 @@ suspend fun Fragment.awaitForCameraPermissions(
     }
 }
 
-suspend fun Fragment.awaitForCameraPermissions(): Boolean = awaitForPermissions(cameraPermissions)
+suspend fun Fragment.awaitForCameraPermissions(
+    registry: ActivityResultRegistry = requireActivity().activityResultRegistry
+): Boolean = awaitForPermissions(cameraPermissions,registry)
