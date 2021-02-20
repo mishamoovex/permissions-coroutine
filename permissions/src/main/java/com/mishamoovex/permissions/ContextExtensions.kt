@@ -10,7 +10,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 
-private fun Context.showPermissionRationaleDialog(
+fun Context.showPermissionRationaleDialog(
     @StringRes title: Int,
     @StringRes message: Int,
     @StringRes btnTitle: Int,
