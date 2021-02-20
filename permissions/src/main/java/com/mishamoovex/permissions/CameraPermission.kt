@@ -1,6 +1,7 @@
 package com.mishamoovex.permissions
 
 import android.Manifest
+import androidx.activity.result.ActivityResultRegistry
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
@@ -23,8 +24,9 @@ suspend fun FragmentActivity.awaitForCameraPermission(
     @StringRes message: Int,
     @StringRes btnTitle: Int,
     @DrawableRes icon: Int,
-    btnAction: (() -> Unit) = { openAppSettingsActivity(appId) }
-): Boolean = awaitForPermissions(cameraPermissions).also { approved ->
+    btnAction: (() -> Unit) = { openAppSettingsActivity(appId) },
+    registry: ActivityResultRegistry = activityResultRegistry
+): Boolean = awaitForPermissions(cameraPermissions,registry).also { approved ->
     if (!approved) {
         showPermissionRationaleDialog(title, message, btnTitle, icon, btnAction)
     }
@@ -38,8 +40,9 @@ suspend fun Fragment.awaitForCameraPermissions(
     @StringRes message: Int,
     @StringRes btnTitle: Int,
     @DrawableRes icon: Int,
-    btnAction: (() -> Unit) = { context?.openAppSettingsActivity(appId) }
-): Boolean = awaitForPermissions(cameraPermissions).also { approved ->
+    btnAction: (() -> Unit) = { context?.openAppSettingsActivity(appId) },
+    registry: ActivityResultRegistry = requireActivity().activityResultRegistry
+): Boolean = awaitForPermissions(cameraPermissions,registry).also { approved ->
     if (!approved) {
         context?.showPermissionRationaleDialog(title, message, btnTitle, icon, btnAction)
     }
