@@ -1,4 +1,4 @@
-package com.mishamoovex.permissions.location
+package com.mishamoovex.location
 
 import android.Manifest
 import androidx.activity.result.ActivityResultRegistry

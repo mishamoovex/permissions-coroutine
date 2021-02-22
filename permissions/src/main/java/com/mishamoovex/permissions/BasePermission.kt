@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -18,7 +19,7 @@ suspend fun Fragment.awaitForPermissions(
         cont.resume(allGranted)
     }
 
-    lifecycleScope.launchWhenCreated { grantPermissions.launch(permissions) }
+    lifecycleScope.launch { grantPermissions.launch(permissions) }
     cont.invokeOnCancellation { grantPermissions.unregister() }
 }
 
@@ -33,6 +34,6 @@ suspend fun FragmentActivity.awaitForPermissions(
     }
 
     //prevents calling this method before the Fragment was created
-    lifecycleScope.launchWhenCreated { grantPermissions.launch(permissions) }
+    lifecycleScope.launch { grantPermissions.launch(permissions) }
     cont.invokeOnCancellation { grantPermissions.unregister() }
 }

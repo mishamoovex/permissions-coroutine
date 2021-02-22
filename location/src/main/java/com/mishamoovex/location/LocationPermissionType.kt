@@ -1,4 +1,4 @@
-package com.mishamoovex.permissions.location
+package com.mishamoovex.location
 
 enum class LocationPermissionType {
     COARSE, FINE

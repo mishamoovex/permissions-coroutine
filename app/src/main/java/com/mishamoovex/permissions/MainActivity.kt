@@ -4,8 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.mishamoovex.locationprovider.awaitForLocationProviderPermissions
-import com.mishamoovex.permissions.location.LocationPermissionType
-import com.mishamoovex.permissions.location.awaitForLocationPermissions
+import com.mishamoovex.location.LocationPermissionType
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {

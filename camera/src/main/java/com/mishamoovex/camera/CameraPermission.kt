@@ -1,4 +1,4 @@
-package com.mishamoovex.permissions.camera
+package com.mishamoovex.camera
 
 import android.Manifest
 import androidx.activity.result.ActivityResultRegistry

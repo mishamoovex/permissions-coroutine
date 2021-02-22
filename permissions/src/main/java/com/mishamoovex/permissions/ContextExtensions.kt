@@ -28,7 +28,7 @@ fun Context.showPermissionRationaleDialog(
         .show()
 }
 
-fun Context.getDrawableCompat(@DrawableRes id: Int): Drawable =
+private fun Context.getDrawableCompat(@DrawableRes id: Int): Drawable =
     ResourcesCompat.getDrawable(resources, id, theme)!!
 
 fun Context.openAppSettingsActivity(appId: String) {
