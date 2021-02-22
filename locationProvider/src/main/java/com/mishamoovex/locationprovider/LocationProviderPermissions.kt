@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +14,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -23,16 +25,17 @@ suspend fun FragmentActivity.awaitForLocationProviderPermissions(
 
     lifecycleScope.launchWhenCreated {
         val settingsCheckResult = checkLocationSettings(priority)
-
         when (settingsCheckResult) {
 
             Result.Granted -> cont.resume(true)
 
             is Result.NotGranted -> {
-                val granted = settingsCheckResult.resolvable?.let{ resolvable ->
+                val resolvable = settingsCheckResult.resolvable
+                val granted = if (resolvable != null){
                     requestLocationProviderPermissions(resolvable, registry)
-                } ?: false
-
+                }else{
+                    false
+                }
                 cont.resume(granted)
             }
         }
@@ -44,22 +47,17 @@ private suspend fun FragmentActivity.requestLocationProviderPermissions(
     registry: ActivityResultRegistry = activityResultRegistry
 ): Boolean = suspendCancellableCoroutine { cont ->
 
-    val requestCode = 123321
-
-    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), registry) { result ->
-        val intent = result.data
-        if (result.resultCode == Activity.RESULT_OK && intent != null) {
+    val startForResult = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult(),registry) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
             cont.resume(true)
         }else{
             cont.resume(false)
         }
     }
 
-    lifecycleScope.launchWhenCreated {
-        startForResult.launch(Intent())
-        resolvable.startResolutionForResult(this@requestLocationProviderPermissions, requestCode)
-    }
+    val intentSenderRequest = IntentSenderRequest.Builder(resolvable.resolution).build()
 
+    startForResult.launch(intentSenderRequest)
     cont.invokeOnCancellation { startForResult.unregister() }
 }
 
