@@ -16,9 +16,13 @@ Step 2. Add the dependency
 	        implementation 'com.github.mishamoovex:permissions-coroutine:VERSION'
 	}
  
- Step 3. If you want to use a specific module put in your Gradle file permissions which you are interested in from the list listed below
+ Spet 3. You should add user-permissions into the Android app manifest file
+ 
+ Step 4. If you want to use a specific module put in your Gradle file permissions which you are interested in from the list listed below
  
           implementation 'com.github.mishamoovex.permissions-coroutine:base:VESION'
           implementation 'com.github.mishamoovex.permissions-coroutine:location:VESION'
           implementation 'com.github.mishamoovex.permissions-coroutine:locationProvider:VESION'
-          implementation 'com.github.mishamoovex.permissions-coroutine:camera:VESION'
+          implementation 'com.github.mishamoovex.permissions-coroutine:camera:VESION
+	 
+NOTE!!!  You should use these coroutine-based permission checks only in OnCreate(Activity) OnViewCreated(Fragment) methods. Check the sample app to see how to integrate it into your project together with the Jetpack lifecycle components.
