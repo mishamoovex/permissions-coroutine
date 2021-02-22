@@ -54,28 +54,6 @@ suspend fun FragmentActivity.awaitForLocationProviderPermissions(
     }
 }
 
-//private suspend fun FragmentActivity.requestLocationProviderPermissions(
-//    resolvable: ResolvableApiException,
-//    registry: ActivityResultRegistry = activityResultRegistry
-//): Boolean = suspendCancellableCoroutine { cont ->
-//
-//    val startForResult = registerForActivityResult(
-//        ActivityResultContracts.StartIntentSenderForResult(),
-//        registry
-//    ) { result ->
-//        if (result.resultCode == Activity.RESULT_OK) {
-//            cont.resume(true)
-//        } else {
-//            cont.resume(false)
-//        }
-//    }
-//
-//    val intentSenderRequest = IntentSenderRequest.Builder(resolvable.resolution).build()
-//
-//    startForResult.launch(intentSenderRequest)
-//    cont.invokeOnCancellation { startForResult.unregister() }
-//}
-
 private suspend fun Context.checkLocationSettings(
     priority: Int = LocationRequest.PRIORITY_HIGH_ACCURACY
 ): Result = suspendCancellableCoroutine { cont ->
