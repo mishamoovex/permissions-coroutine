@@ -1,6 +1,6 @@
 include ':camera'
 include ':location'
 include ':locationProvider'
-include ':permissions'
+include ':base'
 include ':app'
 rootProject.name = "permissions-coroutine"
