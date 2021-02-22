@@ -1,4 +1,10 @@
-# permissions-coroutine
+# Android app permission checks based on kotlin-coroutine and android ActivityResultAPI
+
+DOC references:
+ 
+ActivityResultAPI: https://developer.android.com/training/basics/intents/result
+  
+Coroutines: https://developer.android.com/kotlin/coroutines?gclid=CjwKCAiAyc2BBhAaEiwA44-wW2rA4cGUwJftu-1qS9asWGR9KfhLWBTiyV62wwkmcInGu2cBknIKhhoCMAUQAvD_BwE&gclsrc=aw.ds
 
 Current vesion: 1.0.0
 
