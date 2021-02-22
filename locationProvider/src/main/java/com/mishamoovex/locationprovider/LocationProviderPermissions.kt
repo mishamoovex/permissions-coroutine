@@ -2,7 +2,6 @@ package com.mishamoovex.locationprovider
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,43 +22,59 @@ suspend fun FragmentActivity.awaitForLocationProviderPermissions(
     registry: ActivityResultRegistry = activityResultRegistry
 ): Boolean = suspendCancellableCoroutine { cont ->
 
-    lifecycleScope.launchWhenCreated {
-        val settingsCheckResult = checkLocationSettings(priority)
-        when (settingsCheckResult) {
+    val startForResult = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult(), registry
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            cont.resume(true)
+        } else {
+            cont.resume(false)
+        }
+    }
 
-            Result.Granted -> cont.resume(true)
+
+    lifecycleScope.launch {
+
+        when (val settingsCheckResult = checkLocationSettings(priority)) {
+
+            is Result.Granted -> cont.resume(true)
 
             is Result.NotGranted -> {
-                val resolvable = settingsCheckResult.resolvable
-                val granted = if (resolvable != null){
-                    requestLocationProviderPermissions(resolvable, registry)
+                val intentSenderRequest = settingsCheckResult.resolvable
+                    ?.let { IntentSenderRequest.Builder(it.resolution) }
+                    ?.build()
+
+                if (intentSenderRequest != null){
+                    startForResult.launch(intentSenderRequest)
+                    cont.invokeOnCancellation { startForResult.unregister() }
                 }else{
-                    false
+                    cont.resume(false)
                 }
-                cont.resume(granted)
             }
         }
     }
 }
 
-private suspend fun FragmentActivity.requestLocationProviderPermissions(
-    resolvable: ResolvableApiException,
-    registry: ActivityResultRegistry = activityResultRegistry
-): Boolean = suspendCancellableCoroutine { cont ->
-
-    val startForResult = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult(),registry) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            cont.resume(true)
-        }else{
-            cont.resume(false)
-        }
-    }
-
-    val intentSenderRequest = IntentSenderRequest.Builder(resolvable.resolution).build()
-
-    startForResult.launch(intentSenderRequest)
-    cont.invokeOnCancellation { startForResult.unregister() }
-}
+//private suspend fun FragmentActivity.requestLocationProviderPermissions(
+//    resolvable: ResolvableApiException,
+//    registry: ActivityResultRegistry = activityResultRegistry
+//): Boolean = suspendCancellableCoroutine { cont ->
+//
+//    val startForResult = registerForActivityResult(
+//        ActivityResultContracts.StartIntentSenderForResult(),
+//        registry
+//    ) { result ->
+//        if (result.resultCode == Activity.RESULT_OK) {
+//            cont.resume(true)
+//        } else {
+//            cont.resume(false)
+//        }
+//    }
+//
+//    val intentSenderRequest = IntentSenderRequest.Builder(resolvable.resolution).build()
+//
+//    startForResult.launch(intentSenderRequest)
+//    cont.invokeOnCancellation { startForResult.unregister() }
+//}
 
 private suspend fun Context.checkLocationSettings(
     priority: Int = LocationRequest.PRIORITY_HIGH_ACCURACY
